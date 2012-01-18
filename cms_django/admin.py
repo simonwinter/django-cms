@@ -49,16 +49,26 @@ class TextBlockAdmin(admin.ModelAdmin):
 admin.site.register(TextBlock, TextBlockAdmin)
 admin.site.register(ImageBlock, ImageBlockAdmin)
 
-class BlockInline(admin.StackedInline):
+class BlockInline(admin.TabularInline):
 	model = Block
 	extra = 0
 	max_num = 0
 
 	def queryset(self, request):
-		id = int(request.META['PATH_INFO'].split('/')[-2])
-		return InheritanceQuerySet(model=Block).select_subclasses().filter(page=id)
+		try:
+			id = int(request.META['PATH_INFO'].split('/')[-2])
+			qs = InheritanceQuerySet(model=Block).select_subclasses().filter(page=id)
+		except ValueError:
+			qs = None
+
+		return qs
 
 class PageAdmin(admin.ModelAdmin):
 	inlines = [BlockInline, ]
+
+	class Media:
+		js = [settings.STATIC_URL + 'admin/js/dynamic_inlines_with_sort.js',
+			settings.STATIC_URL + 'admin/js/jquery-ui-1.8.17.sortable.min.js']
+        css = { 'all' : [settings.STATIC_URL + 'admin/css/dynamic_inlines_with_sort.css'], }
 
 admin.site.register(Page, PageAdmin)

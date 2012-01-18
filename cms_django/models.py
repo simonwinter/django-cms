@@ -9,9 +9,14 @@ from image_cropping.fields import ImageRatioField, ImageCropField
 
 class Block(models.Model):
 	page = models.ForeignKey('Page')
+	sort_order = models.PositiveIntegerField(default=0)
 
 	def __unicode__(self):
 		return ''
+
+	class Meta:
+		ordering = ('sort_order', )
+
 
 class TextBlock(Block):
 	HEADING_CHOICES = (
