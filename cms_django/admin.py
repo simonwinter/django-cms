@@ -13,8 +13,11 @@ class ImageBlockAdmin(admin.ModelAdmin):
 	list_display_links = ('_thumbnail', '_name',)
 
 	fieldsets = (
-		('Page', {
-			'fields': ('page', )
+		('', {
+			'fields': ('is_live', 'page',)
+		}),
+		('Heading', {
+			'fields': ('heading', 'heading_tag')
 		}),
 		('Image', {
 			'fields': ('image', 'caption')
@@ -53,6 +56,7 @@ class BlockInline(admin.TabularInline):
 	model = Block
 	extra = 0
 	max_num = 0
+	fk_name = 'page'
 
 	def queryset(self, request):
 		try:
